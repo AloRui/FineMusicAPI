@@ -1,0 +1,6 @@
+@FineMusicAPI_HostAddress = http://localhost:5120
+
+GET {{FineMusicAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
