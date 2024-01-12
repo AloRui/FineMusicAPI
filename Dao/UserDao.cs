@@ -16,7 +16,7 @@ namespace FineMusicAPI.Dao
         public Task<bool> UpdateUserPhotoAsync(int userId, string fileName);
     }
 
-    public class UserDao : IUserDao
+    internal class UserDao : IUserDao
     {
         private readonly DB _ctx;
 

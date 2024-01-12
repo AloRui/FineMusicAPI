@@ -7,9 +7,12 @@ namespace FineMusicAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class HealthController : MyController
+    public class HealthController : ControllerBase
     {
-        [HttpGet, HttpPost, Route("health")]
-        public IActionResult Health() => Ok(RequestResultInfo.Success(null));
+        [HttpGet]
+        public IActionResult Health() => Ok(RequestResultInfo.Success(new
+        {
+            Stauts = "ok"
+        }));
     }
 }

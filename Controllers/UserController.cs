@@ -9,7 +9,7 @@ namespace FineMusicAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : MyController
+    public class UserController : ControllerBase
     {
         private readonly IUserServices _userServices;
 
@@ -57,7 +57,7 @@ namespace FineMusicAPI.Controllers
         {
             try
             {
-                var userId = GetUserId();
+                var userId = this.GetUserId();
                 var userInfo = await _userServices.GetUserInfoByIdAsync(userId);
                 if (userInfo == null)
                 {
@@ -80,7 +80,7 @@ namespace FineMusicAPI.Controllers
         [HttpPost, Route("info/update")]
         public async Task<IActionResult> UpdateUserInfoByIdAsync(UpdateUserInfo info)
         {
-            var userId = GetUserId();
+            var userId = this.GetUserId();
 
             var result = await _userServices.UpdateUserInfoByUserIdAsync(userId, info.Nicename, info.Slogan);
 
@@ -106,7 +106,7 @@ namespace FineMusicAPI.Controllers
         [HttpPost, Route("photo/update")]
         public async Task<IActionResult> UpdateUserPhotoByIdAsync(UpdateUserPhotoInfo info)
         {
-            var userId = GetUserId();
+            var userId = this.GetUserId();
 
             var result = await _userServices.UpdateUserPhotoByUserIdAsync(userId, info.Base64);
 

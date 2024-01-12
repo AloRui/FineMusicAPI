@@ -7,6 +7,9 @@ namespace FineMusicAPI.Builder
         public static IServiceCollection ConfigDao(this IServiceCollection services)
         {
             services.AddScoped<IUserDao, UserDao>();
+            services.AddScoped<IMusicListDao, MusicListDao>();
+            services.AddScoped<IMusicDao, MusicDao>();
+            services.AddScoped<ISearchDao, SearchDao>();
             return services;
         }
     }

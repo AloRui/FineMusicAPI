@@ -34,6 +34,12 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/uphoto"
 });
 
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(AppContext.BaseDirectory, "music_score")),
+    RequestPath = "/music"
+});
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

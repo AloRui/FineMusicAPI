@@ -13,13 +13,22 @@ namespace FineMusicAPI.Services
         public Task<bool> UpdateUserPhotoByUserIdAsync(int userId, string base64);
     }
 
-    public class UserServices : IUserServices
+    internal class UserServices : IUserServices
     {
         private readonly IUserDao _userDao;
 
         public UserServices(IUserDao userDao)
         {
             _userDao = userDao;
+        }
+
+        private string GetUserPhotoPath()
+        {
+            var basePath = AppContext.BaseDirectory + "user_photo/";
+            if (!Directory.Exists(basePath))
+                Directory.CreateDirectory(basePath);
+
+            return basePath;
         }
 
         public async Task<object> GetUserInfoByIdAsync(int userId)
@@ -42,14 +51,15 @@ namespace FineMusicAPI.Services
 
         public async Task<bool> UpdateUserPhotoByUserIdAsync(int userId, string base64)
         {
-            string fileName = Guid.NewGuid().ToString() + ".jpg";
-            var basePath = AppContext.BaseDirectory + "user_photo/";
-            if (!Directory.Exists(basePath))
-                Directory.CreateDirectory(basePath);
-            var filePath = basePath + fileName;
-            var bytes = Convert.FromBase64String(base64);
-            File.WriteAllBytes(filePath, bytes);
+            var fileName = Common.SaveImgToLocal(base64, GetUserPhotoPath());
+
+            if (string.IsNullOrEmpty(fileName))
+            {
+                return false;
+            }
+
             var result = await _userDao.UpdateUserPhotoAsync(userId, fileName);
+
             return result;
         }
     }
