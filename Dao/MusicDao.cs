@@ -9,6 +9,10 @@ namespace FineMusicAPI.Dao
         public Task<List<MusicInfo>> GetMusicByMusicListIdAsync(int id);
 
         public Task<MusicInfo?> GetMusicInfoByIdAsync(int id);
+
+        public Task<bool> AddMusicToListAsync(int musicId, int listId);
+
+        public Task<bool> CheckMusicIsInListAsync(int musicId, int listId);
     }
 
     internal class MusicDao : IMusicDao
@@ -18,6 +22,33 @@ namespace FineMusicAPI.Dao
         public MusicDao(DB ctx)
         {
             _ctx = ctx;
+        }
+
+        public async Task<bool> AddMusicToListAsync(int musicId, int listId)
+        {
+            try
+            {
+                var newInfo = _ctx.MusicOfLists.Add(new MusicOfList
+                {
+                    MusicId = musicId,
+                    MusicListId = listId,
+                    AddedTime = DateTime.Now
+                });
+
+                var updateCount = await _ctx.SaveChangesAsync();
+
+                return updateCount >= 0;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> CheckMusicIsInListAsync(int musicId, int listId)
+        {
+            var isExisted = await _ctx.MusicOfLists.AnyAsync(a => a.MusicId == musicId && a.MusicListId == listId);
+            return isExisted;
         }
 
         public async Task<List<MusicInfo>> GetMusicByMusicListIdAsync(int id)

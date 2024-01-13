@@ -9,6 +9,8 @@ namespace FineMusicAPI.Services
         public Task<List<MusicInfo>> GetMusicsByMusicListIdAsync(int id);
 
         public Task<MusicInfo?> GetMusicInfoByIdAsync(int id);
+
+        public Task<bool> AddMusicToListAsync(int musicId, int listId);
     }
 
     internal class MusicServices : IMusicServices
@@ -18,6 +20,20 @@ namespace FineMusicAPI.Services
         public MusicServices(IMusicDao musicDao)
         {
             _musicDao = musicDao;
+        }
+
+        public async Task<bool> AddMusicToListAsync(int musicId, int listId)
+        {
+            var thisMusicIsExisted = await _musicDao.CheckMusicIsInListAsync(musicId, listId);
+
+            if (thisMusicIsExisted)
+            {
+                return true;
+            }
+
+            var result = await _musicDao.AddMusicToListAsync(musicId, listId);
+
+            return result;
         }
 
         public async Task<MusicInfo?> GetMusicInfoByIdAsync(int id)

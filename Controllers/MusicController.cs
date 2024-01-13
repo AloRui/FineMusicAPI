@@ -17,6 +17,21 @@ namespace FineMusicAPI.Controllers
             _musicServices = musicServices;
         }
 
+        [HttpPost, Route("list/add")]
+        public async Task<IActionResult> AddMusicToListAsync(AddMusicToListInfo info)
+        {
+            var result = await _musicServices.AddMusicToListAsync(info.MusicId, info.ListId);
+
+            if (result)
+            {
+                return Ok(RequestResultInfo.Success(true));
+            }
+            else
+            {
+                return Ok(RequestResultInfo.Failed());
+            }
+        }
+
         [HttpGet, Route("list/bylist/{id}")]
         public async Task<IActionResult> GetMusicByMusicListIdAsync(int id)
         {
