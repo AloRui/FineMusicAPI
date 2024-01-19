@@ -36,7 +36,7 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.UseStaticFiles(new StaticFileOptions
 {
-    FileProvider = new PhysicalFileProvider(Path.Combine(AppContext.BaseDirectory, "music_score")),
+    FileProvider = new PhysicalFileProvider(Path.Combine(AppContext.BaseDirectory, "music_source")),
     RequestPath = "/music"
 });
 
