@@ -10,6 +10,7 @@ namespace FineMusicAPI.Builder
             services.AddScoped<IMusicListServices, MusicListServices>();
             services.AddScoped<IMusicServices, MusicServices>();
             services.AddScoped<ISearchServices, SearchServices>();
+            services.AddScoped<ISingerServices, SingerServices>();
             return services;
         }
     }

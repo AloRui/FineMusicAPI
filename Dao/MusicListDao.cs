@@ -1,6 +1,7 @@
 ﻿using FineMusicAPI.Entities;
 using FineMusicAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace FineMusicAPI.Dao
 {
@@ -21,17 +22,18 @@ namespace FineMusicAPI.Dao
 
     internal class MusicListDao : IMusicListDao
     {
-        private readonly DB _ctx;
+        private readonly IDbContextFactory<DB> _dbContextFactory;
 
-        public MusicListDao(DB ctx)
+        public MusicListDao(IDbContextFactory<DB> dbContextFactory)
         {
-            _ctx = ctx;
+            _dbContextFactory = dbContextFactory;
         }
 
         public async Task<bool> CreateNewMusicListAsync(string name, int userId, string cover, string desc)
         {
             try
             {
+                using var _ctx = _dbContextFactory.CreateDbContext();
                 var newInfo = _ctx.MusicLists.Add(new MusicList
                 {
                     Name = name,
@@ -55,6 +57,7 @@ namespace FineMusicAPI.Dao
         {
             try
             {
+                using var _ctx = _dbContextFactory.CreateDbContext();
                 var data = await _ctx.FollowedLists.Include(a => a.MusicList).Include(a => a.MusicList.User).Where(a => a.UserId == userId).Select(a => new MusicListInfo
                 {
                     Id = a.MusicListId,
@@ -76,8 +79,8 @@ namespace FineMusicAPI.Dao
 
         public async Task<MusicListByUserInfo> GetMusicListByUserInfoAsync(int musicListId, int userId)
         {
+            using var _ctx = _dbContextFactory.CreateDbContext();
             var data = await _ctx.FollowedLists.AnyAsync(a => a.MusicListId == musicListId && a.UserId == userId);
-
             return new MusicListByUserInfo
             {
                 IsFollowed = data
@@ -88,6 +91,7 @@ namespace FineMusicAPI.Dao
         {
             try
             {
+                using var _ctx = _dbContextFactory.CreateDbContext();
                 var musicInfo = await _ctx.MusicLists.Include(a => a.User).Include(a => a.MusicOfLists).Select(a => new MusicListInfo
                 {
                     Id = a.Id,
@@ -111,6 +115,7 @@ namespace FineMusicAPI.Dao
         {
             try
             {
+                using var _ctx = _dbContextFactory.CreateDbContext();
                 var data = await _ctx.MusicLists.Include(a => a.User).Where(a => a.UserId == userId).Select(a => new MusicListInfo
                 {
                     Id = a.Id,
@@ -134,6 +139,7 @@ namespace FineMusicAPI.Dao
         {
             try
             {
+                using var _ctx = _dbContextFactory.CreateDbContext();
                 if (await _ctx.FollowedLists.AnyAsync(a => a.UserId == userId && a.MusicListId == musicListId))
                 {
                     _ctx.FollowedLists.RemoveRange(_ctx.FollowedLists.Where(a => a.UserId == userId && a.MusicListId == musicListId));

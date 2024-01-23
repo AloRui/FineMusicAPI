@@ -18,17 +18,18 @@ namespace FineMusicAPI.Dao
 
     internal class UserDao : IUserDao
     {
-        private readonly DB _ctx;
+        readonly IDbContextFactory<DB> _dbContextFactory;
 
-        public UserDao(DB ctx)
+        public UserDao(IDbContextFactory<DB> dbContextFactory)
         {
-            _ctx = ctx;
+            _dbContextFactory = dbContextFactory;
         }
 
         public async Task<object> GetUserInfoByIdAsync(int userId)
         {
             try
             {
+                using var _ctx = _dbContextFactory.CreateDbContext();
                 var userInfo = await _ctx.Users.FirstOrDefaultAsync(a => a.Id == userId);
 
                 if (userInfo == null)
@@ -55,6 +56,7 @@ namespace FineMusicAPI.Dao
         {
             try
             {
+                using var _ctx = _dbContextFactory.CreateDbContext();
                 var userInfo = await _ctx.Users.FirstOrDefaultAsync(a => a.Phone == phone && a.Password == password);
 
                 if (userInfo == null)
@@ -76,6 +78,7 @@ namespace FineMusicAPI.Dao
         {
             try
             {
+                using var _ctx = _dbContextFactory.CreateDbContext();
                 var userInfo = await _ctx.Users.FirstOrDefaultAsync(a => a.Id == userId);
 
                 if (userInfo == null)
@@ -100,6 +103,7 @@ namespace FineMusicAPI.Dao
         {
             try
             {
+                using var _ctx = _dbContextFactory.CreateDbContext();
                 var userInfo = await _ctx.Users.FirstOrDefaultAsync(a => a.Id == userId);
 
                 if (userInfo == null)

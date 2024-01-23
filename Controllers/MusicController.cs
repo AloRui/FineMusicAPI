@@ -49,5 +49,19 @@ namespace FineMusicAPI.Controllers
             else
                 return Ok(RequestResultInfo.Failed());
         }
+
+        [HttpGet, Route("lrc/byid/{id}")]
+        public async Task<IActionResult> GetMusicLrcDataByIdAsync(int id)
+        {
+            var result = await _musicServices.GetMusicLrcListByMusicId(id);
+            return Ok(RequestResultInfo.Success(result));
+        }
+
+        [HttpGet, Route("list/bycollection/{id}")]
+        public async Task<IActionResult> GetMusicListByCollectionIdAsync(int id)
+        {
+            var musicList = await _musicServices.GetMusicByCollectionIdAsync(id);
+            return Ok(RequestResultInfo.Success(musicList));
+        }
     }
 }

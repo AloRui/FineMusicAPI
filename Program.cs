@@ -13,12 +13,7 @@ builder.Services.AddAuthentication("CookieAuth")
     });
 
 var dbConnectionStr = builder.Configuration.GetValue<string>("DB:ConnectionStr");
-
-builder.Services.AddDbContext<DB>(option =>
-{
-    option.UseSqlServer(dbConnectionStr);
-});
-
+builder.Services.ConfigDB(dbConnectionStr ?? "");
 builder.Services.ConfigDao();
 builder.Services.ConfigServices();
 

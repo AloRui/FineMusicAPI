@@ -1,6 +1,7 @@
 ﻿using FineMusicAPI.Entities;
 using FineMusicAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using System.Runtime.CompilerServices;
 
 namespace FineMusicAPI.Dao
@@ -12,11 +13,11 @@ namespace FineMusicAPI.Dao
 
     internal class SearchDao : ISearchDao
     {
-        private readonly DB _ctx;
+        private readonly IDbContextFactory<DB> _dbContextFactory;
 
-        public SearchDao(DB ctx)
+        public SearchDao(IDbContextFactory<DB> dbContextFactory)
         {
-            _ctx = ctx;
+            _dbContextFactory = dbContextFactory;
         }
 
         public async Task<List<SearchResultInfo>> SearchAsync(string value)
@@ -30,6 +31,8 @@ namespace FineMusicAPI.Dao
                         return new List<SearchResultInfo>();
                     });
             }
+
+            using var _ctx = _dbContextFactory.CreateDbContext();
 
             var musicData = await _ctx.Musics.Where(a => a.Name.Contains(value)).Include(a => a.Collection.Singer).ToListAsync();
             lsData.AddRange(musicData.Select(a => new SearchResultInfo
